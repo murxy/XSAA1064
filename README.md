@@ -6,7 +6,7 @@ Hey! This library has been designed to work with the Xserve Raid front panel Lig
 ## Includes
 
 List of libraries required for assembly:
-1. [ARDUINO_AVRSTL](https://github.com/arduino-libraries/Arduino_AVRSTL) - You can include from Library manager
+1. --
 
 ## Use
 

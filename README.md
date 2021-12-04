@@ -12,5 +12,5 @@ List of libraries required for assembly:
 
 1. It is necessary to connect 1 and 12 pins of the top SAA1064 on the board. This is necessary so that they receive different addresses.
 2. It is necessary to connect the SDA and SCL pins on both microcircuits to combine the two I2C lines into one.
-3. In the constructor of the class, create two objects and pass addresses to them. If you connected everything correctly, then the left row will receive the address 0x3B, and the right row will receive the address 0x38.
+3. In the constructor of the class, create two objects and pass addresses to them. If you connected everything correctly, then the left row will receive the address 0x38, and the right row will receive the address 0x3B.
 4. Now you can access objects through the constructor and pass values ​​to them using "value"

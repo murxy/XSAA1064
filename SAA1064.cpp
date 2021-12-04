@@ -12,13 +12,12 @@
 #define REG_DIGIT2 0x02
 #define REG_DIGIT3 0x03
 #define REG_DIGIT4 0x04
-#define REG_CON_BITS
 
 /******************************************************************************
  * Constructors
  ******************************************************************************/
 SAA1064::SAA1064(uint8_t address) {
-    _Address = address;  // TODO Implement different subaddresses
+    _Address = address;
 }
 
 
@@ -30,7 +29,7 @@ void SAA1064::begin(uint8_t address) {
 void SAA1064::begin() {
     Wire.begin();
     Wire.beginTransmission(_Address);
-    const uint8_t arr[2]{ 0x00, 0x27 };
+    const uint8_t arr[2]{ REG_CONTROL, 0x27 };
     Wire.write(arr, 2);
     Wire.endTransmission();
     delay(100);

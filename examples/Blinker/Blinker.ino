@@ -17,4 +17,10 @@ for (uint8_t i = 0; i < 101; i++){
   RightColumn.value(100-i, 1);
   delay(10);
 }
+void loop() {
+for (uint8_t i = 0; i < 101; i++){
+  LeftColumn.value(100-i, 0);
+  RightColumn.value(i, 0);
+  delay(10);
+}
 }

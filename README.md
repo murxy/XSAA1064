@@ -7,7 +7,7 @@ Hey! This library has been designed to work with the Xserve Raid front panel Lig
 
 List of libraries required for assembly:
 
-1. --
+1. Wire.h
 
 ##  Use
 

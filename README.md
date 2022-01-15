@@ -11,7 +11,7 @@ List of libraries required for assembly:
 
 ##  Use
 
-1. It is necessary to connect 1 and 12 pins of the top SAA1064 on the board. This is necessary so that they receive different addresses.
+1. It is necessary to connect 1st and 12th pins of the top SAA1064 on the board. This is necessary so that they receive different addresses.
 
 ![Pinning](https://github.com/murxy/SAA1064/blob/main/img/pinning.jpg)
 

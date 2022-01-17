@@ -58,7 +58,7 @@ void XSAA1064::value(uint8_t perc, uint8_t link) {
         uint8_t arr[5]{ REG_DIGIT1, (B00000010 + link), 0, 0, 0 };
         Wire.write(arr, 5);
     } else if(perc > 5 && perc < 10) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00000010 + link), 0, 0, 0 };
+        uint8_t arr[5]{ REG_DIGIT1, (B00000010 + link), B00000010, 0, 0 };
         Wire.write(arr, 5);
     } else if(perc > 9 && perc < 15) {
         uint8_t arr[5]{ REG_DIGIT1, (B00000110 + link), B00000010, 0, 0 };

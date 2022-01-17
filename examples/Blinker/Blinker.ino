@@ -1,6 +1,6 @@
 
 #include <Wire.h>	// This library is required to be included as well
-#include <SAA1064.h>
+#include <XSAA1064.h>
 
 
 SAA1064 LeftColumn = SAA1064(0x38);

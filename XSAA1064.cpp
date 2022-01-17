@@ -1,7 +1,7 @@
 /******************************************************************************
  * Includes
  ******************************************************************************/
-#include "SAA1064.h"
+#include "XSAA1064.h"
 #include <Wire.h>
 
 /******************************************************************************
@@ -16,7 +16,7 @@
 /******************************************************************************
  * Constructors
  ******************************************************************************/
-SAA1064::SAA1064(uint8_t address) {
+XSAA1064::XSAA1064(uint8_t address) {
     _Address = address;
 }
 
@@ -24,9 +24,9 @@ SAA1064::SAA1064(uint8_t address) {
 /******************************************************************************
  * User API
  ******************************************************************************/
-void SAA1064::begin(uint8_t address) {
+void XSAA1064::begin(uint8_t address) {
 }
-void SAA1064::begin() {
+void XSAA1064::begin() {
     Wire.begin();
     Wire.beginTransmission(_Address);
     const uint8_t arr[2]{ REG_CONTROL, 0x27 };
@@ -35,21 +35,21 @@ void SAA1064::begin() {
     delay(100);
 }
 
-void SAA1064::allon() {
+void XSAA1064::allon() {
     Wire.beginTransmission(_Address);
     const uint8_t arr[5]{ REG_DIGIT1, 0x7F, 0x7F, 0x7F, 0x7F };
     Wire.write(arr, 5);
     Wire.endTransmission();
 }
 
-void SAA1064::alloff() {
+void XSAA1064::alloff() {
     Wire.beginTransmission(_Address);
     const uint8_t arr[5]{ REG_DIGIT1, 0, 0, 0, 0 };
     Wire.write(arr, 5);
     Wire.endTransmission();
 }
 
-void SAA1064::value(uint8_t perc, uint8_t link) {
+void XSAA1064::value(uint8_t perc, uint8_t link) {
     Wire.beginTransmission(_Address);
     if(perc == 0) {
         uint8_t arr[5]{ REG_DIGIT1, (0 + link), 0, 0, 0 };

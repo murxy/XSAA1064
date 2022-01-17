@@ -3,8 +3,8 @@
 #include <XSAA1064.h>
 
 
-SAA1064 LeftColumn = SAA1064(0x38);
-SAA1064 RightColumn = SAA1064(0x3B);
+XSAA1064 LeftColumn = XSAA1064(0x38);
+XSAA1064 RightColumn = XSAA1064(0x3B);
 
 void setup() {
 LeftColumn.begin();

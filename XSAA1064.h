@@ -4,18 +4,18 @@ Header file from SAA1064 lib for XServe Raid
 www.murxy.link
 */
 
-#ifndef SAA1064_h
-#define SAA1064_h
+#ifndef XSAA1064_h
+#define XSAA1064_h
 
 #include "Arduino.h"
 #include <inttypes.h>
 
-class SAA1064
+class XSAA1064
 {
   protected:
 	uint8_t _Address;
   public:
-    SAA1064(uint8_t);
+    XSAA1064(uint8_t);
 	void begin(uint8_t);
 	void begin();
 	void allon();

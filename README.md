@@ -13,7 +13,7 @@ List of libraries required for assembly:
 
 1. It is necessary to connect 1st and 12th pins of the top SAA1064 on the board. This is necessary so that they receive different addresses.
 
-![Pinning](https://github.com/murxy/SAA1064/blob/main/img/pinning.jpg)
+![Pinning](https://user-images.githubusercontent.com/75093384/150635924-b2bd34b2-f1c1-4d93-9b3e-e07ff283e40c.png)
 
 2. It is necessary to connect the SDA and SCL pins on both microcircuits to combine the two I2C lines into one.
 

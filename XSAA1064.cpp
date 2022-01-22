@@ -50,6 +50,10 @@ void XSAA1064::alloff() {
 }
 
 void XSAA1064::value(uint8_t perc, uint8_t link) {
+    /*if (percNew >= 0 && perc <= 100) {
+        uint8_t perc = percNew;
+    } else break;*/
+    
     Wire.beginTransmission(_Address);
     if(perc == 0) {
         uint8_t arr[5]{ REG_DIGIT1, (0 + link), 0, 0, 0 };

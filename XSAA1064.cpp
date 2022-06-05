@@ -2,131 +2,156 @@
  * Includes
  ******************************************************************************/
 #include "XSAA1064.h"
+
+#include <Arduino.h>
 #include <Wire.h>
+
+namespace murxy {
 
 /******************************************************************************
  * Definitions
  ******************************************************************************/
-#define REG_CONTROL 0x00
-#define REG_DIGIT1 0x01
-#define REG_DIGIT2 0x02
-#define REG_DIGIT3 0x03
-#define REG_DIGIT4 0x04
+namespace Register {
+    constexpr uint8_t Control = 0x00;
+    constexpr uint8_t Digit1 = 0x01;
+    constexpr uint8_t Digit2 = 0x02;
+    constexpr uint8_t Digit3 = 0x03;
+    constexpr uint8_t Digit4 = 0x04;
+} // namespace Register
+
+namespace DelayFor {
+    constexpr uint32_t Initialize = 100u;
+    constexpr uint32_t Update = 0u;
+} // namespace Timeout
+
+namespace Led {
+
+constexpr uint8_t Count = 24;
+constexpr uint32_t All = 0b00001111011111110111111001111110;
+constexpr uint32_t None = 0b00000000000000000000000000000000;
+
+const uint32_t At[Count] = {
+    0b00000000000000000000000000000001,
+    0b00000000000000000000000000000010,
+    0b00000000000000000000001000000000,
+    0b00000000000000000000000000000100,
+    0b00000000000000000000010000000000,
+    0b00000000000000000000000000001000,
+
+    0b00000000000000000000100000000000,
+    0b00000000000000000000000000010000,
+    0b00000000000000000001000000000000,
+    0b00000000000000000000000000100000,
+    0b00000000000000000010000000000000,
+    0b00000000000000000000000001000000,
+
+    0b00000000000000000100000000000000,
+    0b00000000000000010000000000000000,
+    0b00000001000000000000000000000000,
+    0b00000000000000100000000000000000,
+    0b00000010000000000000000000000000,
+    0b00000000000001000000000000000000,
+
+    0b00000100000000000000000000000000,
+    0b00000000000010000000000000000000,
+    0b00001000000000000000000000000000,
+    0b00000000000100000000000000000000,
+    0b00000000001000000000000000000000,
+    0b00000000010000000000000000000000,
+};
+
+} // namespace Led
 
 /******************************************************************************
  * Constructors
  ******************************************************************************/
-XSAA1064::XSAA1064(uint8_t address) {
-    _Address = address;
-}
-
+XSAA1064::XSAA1064(uint8_t address) noexcept
+    : mAddress(address)
+    , mLeds(Led::None)
+    , mDirtyFlag(true) {}
 
 /******************************************************************************
  * User API
  ******************************************************************************/
 void XSAA1064::begin(uint8_t address) {
+    mAddress = address;
+    begin();
 }
+
 void XSAA1064::begin() {
     Wire.begin();
-    Wire.beginTransmission(_Address);
-    const uint8_t arr[2]{ REG_CONTROL, 0x27 };
-    Wire.write(arr, 2);
+    Wire.beginTransmission(mAddress);
+    const uint8_t arr[]{ Register::Control, 0b00100111 };
+    Wire.write(arr, sizeof(arr));
     Wire.endTransmission();
-    delay(100);
+    delay(DelayFor::Initialize);
 }
 
-void XSAA1064::allon() {
-    Wire.beginTransmission(_Address);
-    const uint8_t arr[5]{ REG_DIGIT1, 0x7F, 0x7F, 0x7F, 0x7F };
-    Wire.write(arr, 5);
-    Wire.endTransmission();
+void XSAA1064::clear() {
+    mLeds = Led::None;
+    mDirtyFlag = true;
 }
 
-void XSAA1064::alloff() {
-    Wire.beginTransmission(_Address);
-    const uint8_t arr[5]{ REG_DIGIT1, 0, 0, 0, 0 };
-    Wire.write(arr, 5);
-    Wire.endTransmission();
-}
-
-void XSAA1064::value(uint8_t perc, uint8_t link) {
-    /*if (percNew >= 0 && perc <= 100) {
-        uint8_t perc = percNew;
-    } else break;*/
-    
-    Wire.beginTransmission(_Address);
-    if(perc == 0) {
-        uint8_t arr[5]{ REG_DIGIT1, (0 + link), 0, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 0 && perc < 6) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00000010 + link), 0, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 5 && perc < 10) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00000010 + link), B00000010, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 9 && perc < 15) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00000110 + link), B00000010, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 14 && perc < 19) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00000110 + link), B00000110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 18 && perc < 23) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00001110 + link), B00000110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 18 && perc < 27) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00001110 + link), B00001110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 26 && perc < 32) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00011110 + link), B00001110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 31 && perc < 36) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00011110 + link), B00011110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 35 && perc < 41) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00111110 + link), B00011110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 40 && perc < 45) {
-        uint8_t arr[5]{ REG_DIGIT1, (B00111110 + link), B00111110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 44 && perc < 49) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B00111110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 48 && perc < 54) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, 0, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 53 && perc < 58) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00000001, 0 };
-        Wire.write(arr, 5);
-    } else if(perc > 57 && perc < 62) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00000001, B00000001 };
-        Wire.write(arr, 5);
-    } else if(perc > 61 && perc < 67) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00000011, B00000001 };
-        Wire.write(arr, 5);
-    } else if(perc > 66 && perc < 71) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00000011, B00000011 };
-        Wire.write(arr, 5);
-    } else if(perc > 70 && perc < 75) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00000111, B00000011 };
-        Wire.write(arr, 5);
-    } else if(perc > 74 && perc < 80) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00000111, B00000111 };
-        Wire.write(arr, 5);
-    } else if(perc > 79 && perc < 84) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00001111, B00000111 };
-        Wire.write(arr, 5);
-    } else if(perc > 83 && perc < 88) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00001111, B00001111 };
-        Wire.write(arr, 5);
-    } else if(perc > 87 && perc < 93) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00011111, B00001111 };
-        Wire.write(arr, 5);
-    } else if(perc > 92 && perc < 97) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B00111111, B00001111 };
-        Wire.write(arr, 5);
-    } else if(perc > 96 && perc < 101) {
-        uint8_t arr[5]{ REG_DIGIT1, (B01111110 + link), B01111110, B01111111, B00001111 };
-        Wire.write(arr, 5);
+void XSAA1064::set(uint8_t from, uint8_t to, bool enabled) {
+    if (from > to) {
+        set(LinkLed, false);
+        return;
+        // set(to, from, enabled);
     }
-    Wire.endTransmission();
+    if (to >= Led::Count) to = Led::Count;
+    if (from == LinkLed && to == Led::Count) {
+        setAll(enabled);
+        return;
+    }
+    if (from == to) {
+        set(from, enabled);
+        return;
+    }
+    for(uint8_t current{ from }; current < to; ++current) {
+        set(current, enabled);
+    }
 }
+
+void XSAA1064::set(uint8_t position, bool enabled) {
+    if (position >= Led::Count)
+        return;
+
+    if (enabled)
+        mLeds |= Led::At[position];
+    else
+        mLeds &= ~Led::At[position];
+
+    mDirtyFlag = true;
+}
+
+void XSAA1064::setAll(bool enabled) {
+    mLeds = (enabled ? Led::All : Led::None);
+    mDirtyFlag = true;
+}
+
+bool XSAA1064::get(uint8_t position) const {
+    if (position >= Led::Count)
+        return false;
+    return static_cast<bool>(mLeds & ~Led::At[position]);
+}
+
+bool XSAA1064::initialized() const {
+    return mAddress != 0;
+}
+
+void XSAA1064::update() {
+    if (!mDirtyFlag)
+        return;
+    Wire.beginTransmission(mAddress);
+    Wire.write(Register::Digit1);
+    Wire.write(reinterpret_cast<const uint8_t*>(&mLeds), sizeof(mLeds));
+    Wire.endTransmission();
+    delay(DelayFor::Update);
+    mDirtyFlag = false;
+}
+
+uint8_t XSAA1064::ledCount() {
+    return Led::Count;
+}
+
+} // namespace murxy

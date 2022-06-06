@@ -1,0 +1,5 @@
+{
+    "sketch": "examples\\Blinker\\Blinker.ino",
+    "board": "arduino:avr:uno",
+    "programmer": "arduino:avrispmkii"
+}

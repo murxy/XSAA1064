@@ -7,20 +7,38 @@ www.murxy.link
 #ifndef XSAA1064_h
 #define XSAA1064_h
 
-#include "Arduino.h"
 #include <inttypes.h>
 
-class XSAA1064
-{
-  protected:
-	uint8_t _Address;
-  public:
-    XSAA1064(uint8_t);
-	void begin(uint8_t);
-	void begin();
-	void allon();
-	void alloff();
-	void value(uint8_t, uint8_t);
+namespace murxy {
+
+class XSAA1064 {
+public:
+    static constexpr uint8_t LinkLed = 0;
+
+    explicit XSAA1064(uint8_t address = 0) noexcept;
+
+    void begin(uint8_t address);
+    void begin();
+
+    void clear();
+
+    void set(uint8_t from, uint8_t to, bool enabled);
+    void set(uint8_t position, bool enabled = true);
+    void setAll(bool enabled);
+
+    bool get(uint8_t position) const;
+    bool initialized() const;
+
+    void update();
+
+    static uint8_t ledCount();
+
+private:
+    uint8_t mAddress;
+    uint32_t mLeds;
+    uint8_t mDirtyFlag : 1;
 };
+
+} // namespace murxy
 
 #endif
